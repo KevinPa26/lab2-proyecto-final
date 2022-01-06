@@ -1,0 +1,83 @@
+extends layout
+
+block content
+  nav(class="navbar navbar-expand-sm bg-light justify-content-center")
+    ul(class="navbar-nav")
+      li(class="nav-item")
+        a(class="nav-link" href="" data-toggle="modal" data-target="#myModal") LOGIN
+  .container-fluid(id="contIndex")
+    .row
+      h1= title
+      p Welcome to #{title}
+    .row
+      .col
+      .col
+        h3= error
+      .col
+    .row
+      div(class="modal fade" id="myModal" role="dialog")
+        div(class="modal-dialog")
+          div(class="modal-content")
+            div(class="modal-header")
+              h4(class="modal-title") LOGIN
+            div(class="modal-body")
+              form(method="post" action="singIn")
+                .form-group
+                  label(for="usuario") USUARIO:
+                  input#usuario(type="text" name="usuario" class="form-control" required)
+                .form-group
+                  label(for="password") CONTRASEÑA:
+                  input#password(type="password" name="password" class="form-control" required)
+                br
+                button(type="submit" class="btn btn-outline-success" style="margin-left: 30%; margin-right: 5px;") ENTRAR
+                button(id="closeModal" type="button" class="btn btn-outline-danger" data-dismiss="modal") CERRAR
+              br
+              p No tengo cuenta 
+                a(id="registro" href="" data-toggle="modal" data-target="#myModal2") Click acá!
+    .row
+      div(class="modal fade" id="myModal2" role="dialog")
+        div(class="modal-dialog")
+          div(class="modal-content")
+            div(class="modal-header")
+              h4(class="modal-title") REGISTRO
+            div(class="modal-body")
+              form(method="post" action="singUp")
+                .form-group
+                  label(for="userRegistro") USUARIO:
+                  input#userRegistro(type="text" name="userRegistro" class="form-control" minlength="5" required)
+                .form-group
+                  label(for="passRegistro") CONTRASEÑA:
+                  input#passRegistro(type="password" name="passRegistro" class="form-control" minlength="5" required)
+                .form-group
+                  label(for="dni") DNI:
+                  input#dni(type="number" name="dni" class="form-control" min="10000000" max="99999999" required)
+                .form-group
+                  label(for="nombre") NOMBRE:
+                  input#nombre(type="text" name="nombre" class="form-control" minlength="4" required)
+                .form-group
+                  label(for="apellido") APELLIDO:
+                  input#apellido(type="text" name="apellido" class="form-control" minlength="4" required)
+                .form-group
+                  label(for="celular") TELEFONO/CEL:
+                  input#celular(type="number" name="celular" class="form-control" required)
+                .form-group
+                  label(for="email") EMAIL:
+                  input#email(type="email" name="email" class="form-control" required)
+                .form-group
+                  label(for="domicilio") DOMICILIO:
+                  input#domicilio(type="text" name="domicilio" class="form-control" minlength="4" required)
+                br
+                button(type="submit" class="btn btn-outline-success" style="margin-left: 30%; margin-right: 5px;") CREAR
+                button(type="button" class="btn btn-outline-danger" data-dismiss="modal") CERRAR
+
+  script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous")
+  script(src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous")
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js")
+  script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js")
+  script(src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js")
+  script.
+    $('#registro').click(function(){
+      $('#closeModal').click();
+    });
+
+    window.history.pushState({}, '', '/')

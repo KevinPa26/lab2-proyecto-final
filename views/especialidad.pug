@@ -1,0 +1,60 @@
+extends layout
+
+block content
+    nav(class=`navbar navbar-expand-sm ${role == 1 ? 'bg-dark' : role == 2 ? 'bg-success' : 'bg-primary'} navbar-dark`)
+        <!-- Brand -->
+        a(class="navbar-brand" href="") CLINICA
+
+        <!-- Links -->
+        ul(class="navbar-nav ms-auto mb-2 mb-lg-0")
+            if role == 1
+                li(class="nav-item")
+                    a(class="nav-link" href="/") LOBBY
+                li(class="nav-item")
+                    a(class="nav-link" href="/clinica/agregar") AGREGAR CLINICA
+                li(class="nav-item")
+                    a(class="nav-link" href="/procedimiento/agregar") AGREGAR PROCED
+                li(class="nav-item")
+                    a(class="nav-link" href="/medico/agregar") AGREGAR MEDICO
+                li(class="nav-item")
+                    a(class="nav-link" href="/agenda/crearAgenda") CREAR AGENDA
+                li(class="nav-item")
+                    a(class="nav-link" href="/agenda/buscarAgenda") BUSCAR AGENDA
+            else if role == 2
+                li(class="nav-item")
+                    a(class="nav-link" href="/") LOBBY
+                li(class="nav-item")
+                    a(class="nav-link" href="/persona/agregar") AGREGAR PERSONA
+                li(class="nav-item")
+                    a(class="nav-link" href="/turno/allTurnos") TODOS TURNOS
+            else
+                li(class="nav-item")
+                    a(class="nav-link" href="/") LOBBY
+                li(class="nav-item")
+                    a(class="nav-link" href="/turno/misTurnos") MIS TURNOS
+                li(class="nav-item")
+                    a(class="nav-link" href="/agenda/buscarAgenda") RESERVAR TURNO
+            <!-- Dropdown -->
+            li(class="nav-item dropdown")
+                a(class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown") #{persona.nombre} #{persona.apellido}
+                div(class="dropdown-menu")
+                    a(class="dropdown-item" href="/persona/perfil") PERFIL
+                    a(class="dropdown-item" href="/singOut") CERRAR SESIÓN
+    .container-fluid
+        .row
+            .col
+            .col
+                h1 ESPECIALIDAD
+                br
+                h2 NOMBRE:
+                h3 #{esp.nombre}
+                br
+                h2 DETALLES:
+                h3 #{esp.detalles}
+            .col
+
+    script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous")
+    script(src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js")
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js")
+    script(src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js")

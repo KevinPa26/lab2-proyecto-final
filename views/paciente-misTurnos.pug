@@ -1,0 +1,92 @@
+extends layout
+
+block content
+    nav(class="navbar navbar-expand-sm bg-primary navbar-dark")
+        <!-- Brand -->
+        a(class="navbar-brand" href="") CLINICA
+
+        <!-- Links -->
+        ul(class="navbar-nav ms-auto mb-2 mb-lg-0")
+            li(class="nav-item")
+                a(class="nav-link" href="/") LOBBY
+            li(class="nav-item")
+                a(class="nav-link" href="/turno/misTurnos") MIS TURNOS
+            li(class="nav-item")
+                a(class="nav-link" href="/agenda/buscarAgenda") RESERVAR TURNO
+            <!-- Dropdown -->
+            li(class="nav-item dropdown")
+                a(class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown") #{persona.nombre} #{persona.apellido}
+                div(class="dropdown-menu")
+                    a(class="dropdown-item" href="/persona/perfil") PERFIL
+                    a(class="dropdown-item" href="/singOut") CERRAR SESIÓN
+    .container-fluid
+        .row
+            .col
+                h1 MIS TURNOS
+                table#myTable
+                    thead
+                        tr
+                            th ID
+                            th PERSONA
+                            th FECHA RESERVA
+                            th FECHA TURNO
+                            th HORA TURNO
+                            th ESTADO
+                            th COMENTARIO
+                            th MEDICO/PROCEDIMIENTO
+                            th CLINICA
+                            th MODIFICAR
+                    tbody
+                        each val in turnos
+                            tr
+                                td #{val.id}
+                                td
+                                    a(href=`/persona/${val.Persona.id}`) #{val.Persona.nombre} #{val.Persona.apellido}
+                                td #{val.fecha_reserva.toLocaleString()}
+                                td #{val.Calendario.fecha}
+                                td #{val.hora_turno}
+                                td #{val.Estado_turno.descripcion}
+                                td #{val.comentario}
+                                if val.Calendario.Agenda.Medico != null
+                                    td
+                                        a(href=`/medico/${val.Calendario.Agenda.Medico.id}`) #{val.Calendario.Agenda.Medico.Persona.nombre} #{val.Calendario.Agenda.Medico.Persona.apellido}
+                                else
+                                    td
+                                        a(href=`/procedimiento/${val.Calendario.Agenda.Procedimiento.id}`) #{val.Calendario.Agenda.Procedimiento.nombre}
+                                td
+                                    a(href=`/clinica/${val.Calendario.Agenda.Clinica.id}`) #{val.Calendario.Agenda.Clinica.nombre}
+                                td
+                                    button(type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal" onclick="cancelar(this);") CANCELAR
+
+    script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous")
+    script(src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js")
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js")
+    script(src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js")
+    script(src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js")
+    script.
+        $(document).ready( function () {
+            $('#myTable').DataTable();
+        });
+
+        function cancelar(e){
+            var fechaTurno = $(e).parents("tr").find("td")[3].innerHTML;
+            var hoy = new Date().toLocaleDateString();
+            hoy = hoy.split("/").reverse().join("-");
+            if(hoy < fechaTurno){
+                var personaid = $(e).parents("tr").find("a")[0].getAttribute("href").split("/")[2];
+                var id = $(e).parents("tr").find("td")[0].innerHTML;
+                $.ajax({
+                    type:"POST",
+                    url:"http://localhost:3000/turno/cambiarEstado",
+                    data:{id: id,
+                    personaid: personaid,
+                    estadoTurno: 3},
+                    success:function(datos){
+                    }
+                })
+                location.href = "http://localhost:3000/turno/misTurnos"
+            }else{
+                alert('No se puede Cancelar"');
+            }
+        }

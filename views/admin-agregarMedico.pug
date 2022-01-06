@@ -1,0 +1,143 @@
+extends layout
+
+block content
+    nav(class="navbar navbar-expand-sm bg-dark navbar-dark")
+        <!-- Brand -->
+        a(class="navbar-brand" href="") CLINICA
+
+        <!-- Links -->
+        ul(class="navbar-nav ms-auto mb-2 mb-lg-0")
+            li(class="nav-item")
+                a(class="nav-link" href="/") LOBBY
+            li(class="nav-item")
+                a(class="nav-link" href="/clinica/agregar") AGREGAR CLINICA
+            li(class="nav-item")
+                a(class="nav-link" href="/procedimiento/agregar") AGREGAR PROCED
+            li(class="nav-item")
+                a(class="nav-link" href="/medico/agregar") AGREGAR MEDICO
+            li(class="nav-item")
+                a(class="nav-link" href="/agenda/crearAgenda") CREAR AGENDA
+            li(class="nav-item")
+                a(class="nav-link" href="/agenda/buscarAgenda") BUSCAR AGENDA
+            <!-- Dropdown -->
+            li(class="nav-item dropdown")
+                a(class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown") #{persona.nombre} #{persona.apellido}
+                div(class="dropdown-menu")
+                    a(class="dropdown-item" href="/persona/perfil") PERFIL
+                    a(class="dropdown-item" href="/singOut") CERRAR SESIÓN
+    .container-fluid
+        .row
+            .col-4
+            .col-4
+                h1 AGREGAR MEDICO
+                form(method="post" action="agregar")
+                    .form-group
+                        label(for="persona") PERSONA:
+                        br
+                        br
+                        .input-group
+                            select#persona(name="persona" class="form-control" required)
+                                option(value="NULL") ----------------------------------------------
+                            .input-group-append
+                                button(type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#myModal" onclick=";") AGREGAR
+                    .form-group
+                        br
+                        label(for="matricula") MATRICULA:
+                        br
+                        br
+                        input#matricula(type="number" name="matricula" class="form-control" required)
+                    .form-group
+                        br
+                        label(for="especialidad") ESPECIALIDAD:
+                        br
+                        br
+                        .input-group
+                            select#especialidad(name="especialidad" class="form-control" required)
+                                option(value="NULL") ----------------------------------------------
+                            .input-group-append
+                                button(type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#myModal2" onclick=";") AGREGAR
+                    br
+                    button(type="submit" class="btn btn-outline-success" style="margin-left: 30%;") AGREGAR MEDICO
+            .col-4
+        .row
+            .col
+                div(class="modal fade" id="myModal" role="dialog")
+                    div(class="modal-dialog")
+                        div(class="modal-content")
+                            div(class="modal-header")
+                                h4(class="modal-title") AGREGAR PERSONA
+                            div(class="modal-body")
+                                form(method="post" action="/persona/agregar")
+                                    .form-group
+                                        label(for="dni") DNI:
+                                        input#dni(type="number" name="dni" class="form-control")
+                                    .form-group
+                                        label(for="nombre") NOMBRE:
+                                        input#nombre(type="text" name="nombre" class="form-control")
+                                    .form-group
+                                        label(for="apellido") APELLIDO:
+                                        input#apellido(type="text" name="apellido" class="form-control")
+                                    .form-group
+                                        label(for="celular") TELEFONO/CEL:
+                                        input#celular(type="number" name="celular" class="form-control")
+                                    .form-group
+                                        label(for="email") EMAIL:
+                                        input#email(type="email" name="email" class="form-control")
+                                    .form-group
+                                        label(for="domicilio") DOMICILIO:
+                                        input#domicilio(type="text" name="domicilio" class="form-control")
+                                    br
+                                    button(type="submit" class="btn btn-outline-success" style="margin-left: 30%; margin-right: 5px;") AGREGAR
+                                    button(type="button" class="btn btn-outline-danger" data-dismiss="modal") CERRAR
+        .row
+            .col
+                div(class="modal fade" id="myModal2" role="dialog")
+                    div(class="modal-dialog")
+                        div(class="modal-content")
+                            div(class="modal-header")
+                                h4(class="modal-title") AGREGAR ESPECIALIDAD
+                            div(class="modal-body")
+                                form(method="post" action="/especialidad/agregar")
+                                    .form-group
+                                        label(for="nombre") NOMBRE:
+                                        input#nombre(type="text" name="nombre" class="form-control")
+                                    .form-group
+                                        label(for="detalles") DETALLES:
+                                        input#detalles(type="text" name="detalles" class="form-control")
+                                    br
+                                    button(type="submit" class="btn btn-outline-success" style="margin-left: 30%; margin-right: 5px;") AGREGAR
+                                    button(type="button" class="btn btn-outline-danger" data-dismiss="modal") CERRAR
+
+    script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous")
+    script(src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js")
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js")
+    script(src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js")
+    script.
+        $(document).ready(function(){
+            $.ajax({
+                url: `http://localhost:3000/especialidad/todas`,
+                type: 'GET',
+                success: function(respuesta) {
+                    respuesta.forEach(e=>{
+                        console.log(e.nombre)
+                        document.getElementById('especialidad').innerHTML += `<option value=${e.id}>${e.nombre}</option>`;
+                    });
+                },
+                error: function() {
+                    console.error("No es posible completar la operación");
+                }
+            });
+            $.ajax({
+                url: `http://localhost:3000/persona/personasSinRelacion`,
+                type: 'GET',
+                success: function(respuesta) {
+                    respuesta.forEach(e=>{
+                        document.getElementById('persona').innerHTML += `<option value=${e.id}>${e.nombre} ${e.apellido} - ${e.dni}</option>`;
+                    });
+                },
+                error: function() {
+                    console.error("No es posible completar la operación");
+                }
+            });
+        })

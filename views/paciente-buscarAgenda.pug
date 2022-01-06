@@ -1,0 +1,244 @@
+extends layout
+
+block content
+    nav(class="navbar navbar-expand-sm bg-primary navbar-dark")
+        <!-- Brand -->
+        a(class="navbar-brand" href="") CLINICA
+
+        <!-- Links -->
+        ul(class="navbar-nav ms-auto mb-2 mb-lg-0")
+            li(class="nav-item")
+                a(class="nav-link" href="/") LOBBY
+            li(class="nav-item")
+                a(class="nav-link" href="/turno/misTurnos") MIS TURNOS
+            li(class="nav-item")
+                a(class="nav-link" href="/agenda/buscarAgenda") RESERVAR TURNO
+            <!-- Dropdown -->
+            li(class="nav-item dropdown")
+                a(class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown") #{persona.nombre} #{persona.apellido}
+                div(class="dropdown-menu")
+                    a(class="dropdown-item" href="/persona/perfil") PERFIL
+                    a(class="dropdown-item" href="/singOut") CERRAR SESIÓN
+    .container-fluid
+        .row
+            .col-3
+                h2 BUSCAR PARA RESERVAR
+                form(method="post" action="buscarAgenda")
+                    .form-group
+                        label(for="buscarpor") BUSCAR POR:
+                        br
+                        br
+                        select#buscarpor(name="buscarpor" class="form-control")
+                            option(value="Null") ------------------------------------------------------
+                            option(value="Medico") MEDICO
+                            option(value="Procedimiento") PROCEDIMIENTO
+                    .group-medico
+                        .form-group
+                            br
+                            label(for="especialidad") ESPECIALIDAD:
+                            br
+                            br
+                            select#especialidad(name="especialidad" class="form-control")
+                                option(value=null) ------------------------------------------------------
+                        .form-group
+                            br
+                            label(for="medico") MEDICO:
+                            br
+                            br
+                            select#medico(name="medico" class="form-control")
+                                option(value=null) ------------------------------------------------------
+                        .form-group
+                            br
+                            label(for="agenda") AGENDA:
+                            br
+                            br
+                            select#agenda(name="agenda" class="form-control")
+                                option(value=null) ------------------------------------------------------
+                    .group-procedimiento
+                        .form-group
+                            br
+                            label(for="procedimiento") PROCEDIMIENTO:
+                            br
+                            br
+                            select#procedimiento(name="procedimiento" class="form-control")
+                                option(value=null) ------------------------------------------------------
+                        .form-group
+                            br
+                            label(for="agendaPro") AGENDA:
+                            br
+                            br
+                            select#agendaPro(name="agendaPro" class="form-control")
+                                option(value=null) ------------------------------------------------------
+            .col-9
+                h1 CALENDARIO
+                div#calendar
+
+    script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous")
+    script(src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js")
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js")
+    script(src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js")
+    script(src="../javascripts/main.js")
+    script(src="../javascripts/es.js")
+    script.
+        $("#buscarpor").change(function(){
+            if($("#buscarpor").val() == "Medico"){
+                $(".group-medico").css("display", "block")
+            }else{
+                $(".group-medico").css("display", "none")
+            }
+            
+            if($("#buscarpor").val() == "Procedimiento"){
+                $(".group-procedimiento").css("display", "block")
+            }else{
+                $(".group-procedimiento").css("display", "none")
+            }
+        });
+
+        $(document).ready(function() {
+            $.ajax({
+                url: `http://localhost:3000/especialidad/todas`,
+                type: 'GET',
+                success: function(respuesta) {
+                    respuesta.forEach(e=>{
+                        console.log(e.nombre)
+                        document.getElementById('especialidad').innerHTML += `<option value=${e.id}>${e.nombre}</option>`;
+                    });
+                },
+                error: function() {
+                    console.error("No es posible completar la operación");
+                }
+            });
+            $.ajax({
+                url: `http://localhost:3000/procedimiento/todas`,
+                type: 'GET',
+                success: function(respuesta) {
+                    respuesta.forEach(e=>{
+                        console.log(e.nombre)
+                        document.getElementById('procedimiento').innerHTML += `<option value=${e.id}>${e.nombre}</option>`;
+                    });
+                },
+                error: function() {
+                    console.error("No es posible completar la operación");
+                }
+            });
+        });
+
+        $("#especialidad").click(function() {
+            document.getElementById('medico').innerHTML = '';
+            document.getElementById('medico').innerHTML = `<option value="Null"}>------------------------------------------------------</option>`;
+            $.ajax({
+                url: `http://localhost:3000/medico/esp/${$("#especialidad").val()}`,
+                type: 'GET',
+                success: function(respuesta) {
+                    respuesta.forEach(e=>{
+                        console.log(e.nombre)
+                        document.getElementById('medico').innerHTML += `<option value=${e.id}>${e.Persona.nombre} ${e.Persona.apellido}</option>`;
+                    });
+                },
+                error: function() {
+                    console.error("No es posible completar la operación");
+                }
+            });
+        });
+
+        $("#medico").click(function() {
+            document.getElementById('agenda').innerHTML = '';
+            document.getElementById('agenda').innerHTML = `<option value="Null"}>------------------------------------------------------</option>`;
+            $.ajax({
+                url: `http://localhost:3000/agenda/medico/${$("#medico").val()}`,
+                type: 'GET',
+                success: function(respuesta) {
+                    respuesta.forEach(e=>{
+                        console.log(e.nombre)
+                        document.getElementById('agenda').innerHTML += `<option value=${e.id}>${e.nombre} - Clinica: ${e.Clinica.nombre}</option>`;
+                    });
+                },
+                error: function() {
+                    console.error("No es posible completar la operación");
+                }
+            });
+        });
+
+        $("#procedimiento").click(function() {
+            document.getElementById('agendaPro').innerHTML = '';
+            document.getElementById('agendaPro').innerHTML = `<option value="Null"}>------------------------------------------------------</option>`;
+            $.ajax({
+                url: `http://localhost:3000/agenda/procedimiento/${$("#procedimiento").val()}`,
+                type: 'GET',
+                success: function(respuesta) {
+                    respuesta.forEach(e=>{
+                        console.log(e.nombre)
+                        document.getElementById('agendaPro').innerHTML += `<option value=${e.id}>${e.nombre} - Clinica: ${e.Clinica.nombre}</option>`;
+                    });
+                },
+                error: function() {
+                    console.error("No es posible completar la operación");
+                }
+            });
+        });
+
+        $("#agenda").click(function() {
+            $.ajax({
+                url: `http://localhost:3000/calendario/agenda/${$("#agenda").val()}`,
+                type: 'GET',
+                success: function(respuesta) {
+                    var evts = []
+                    respuesta.forEach(a=>{
+                        e = {
+                            id:a.id,
+                            title: prettyTime(a.hora_inicio) + " - " + prettyTime(a.hora_fin),
+                            url: `/turno/calendario/${a.id}`,
+                            start: a.fecha
+                        }
+                        evts.push(e);
+                    })
+                    var calendarEl = document.getElementById('calendar');
+                    var calendar = new FullCalendar.Calendar(calendarEl, {
+                        locale: 'es',
+                        initialView: 'dayGridMonth',
+                        selectable: true,
+                        events: evts
+                        });
+                    calendar.render();
+                },
+                error: function() {
+                    console.error("No es posible completar la operación");
+                }
+            });
+        });
+        
+        $("#agendaPro").click(function() {
+            console.log("hola");
+            $.ajax({
+                url: `http://localhost:3000/calendario/agenda/${$("#agendaPro").val()}`,
+                type: 'GET',
+                success: function(respuesta) {
+                    var evts = []
+                    respuesta.forEach(a=>{
+                        e = {
+                            id:a.id,
+                            title: prettyTime(a.hora_inicio) + " - " + prettyTime(a.hora_fin),
+                            url: `/turno/calendario/${a.id}`,
+                            start: a.fecha
+                        }
+                        evts.push(e);
+                    })
+                    var calendarEl = document.getElementById('calendar');
+                    var calendar = new FullCalendar.Calendar(calendarEl, {
+                        locale: 'es',
+                        initialView: 'dayGridMonth',
+                        selectable: true,
+                        events: evts
+                        });
+                    calendar.render();
+                },
+                error: function() {
+                    console.error("No es posible completar la operación");
+                }
+            });
+        });
+
+        function prettyTime(time) {
+            return time.split(":")[0] + ":" + time.split(":")[1]
+        }

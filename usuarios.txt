@@ -1,0 +1,14 @@
+
+ADMINISTRADOR:
+- kevinpa 123456
+- fernadoga 123456
+
+SECRETARIO:
+- marcega 123456
+- lauchirino 123456
+
+PACIENTE:
+- jbuscarolo jorgeb
+- peblanco pedrob
+- fsaez fernadosaez
+- maxim	maxi123

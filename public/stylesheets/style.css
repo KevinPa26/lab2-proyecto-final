@@ -1,0 +1,27 @@
+body {
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-size: cover;
+}
+
+a {
+  color: #00B7FF;
+}
+
+#contIndex {
+  height: 619px;
+  background-image: url("../images/doctor.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+#myTable tr > *:nth-child(1) {
+  display: none;
+}
+
+.group-medico {
+  display: none;
+}
+
+.group-procedimiento {
+  display: none;
+}

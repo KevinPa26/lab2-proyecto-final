@@ -1,0 +1,167 @@
+extends layout
+
+block content
+    nav(class="navbar navbar-expand-sm bg-dark navbar-dark")
+        <!-- Brand -->
+        a(class="navbar-brand" href="") CLINICA
+
+        <!-- Links -->
+        ul(class="navbar-nav ms-auto mb-2 mb-lg-0")
+            li(class="nav-item")
+                a(class="nav-link" href="/") LOBBY
+            li(class="nav-item")
+                a(class="nav-link" href="/clinica/agregar") AGREGAR CLINICA
+            li(class="nav-item")
+                a(class="nav-link" href="/procedimiento/agregar") AGREGAR PROCED
+            li(class="nav-item")
+                a(class="nav-link" href="/medico/agregar") AGREGAR MEDICO
+            li(class="nav-item")
+                a(class="nav-link" href="/agenda/crearAgenda") CREAR AGENDA
+            li(class="nav-item")
+                a(class="nav-link" href="/agenda/buscarAgenda") BUSCAR AGENDA
+            <!-- Dropdown -->
+            li(class="nav-item dropdown")
+                a(class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown") #{persona.nombre} #{persona.apellido}
+                div(class="dropdown-menu")
+                    a(class="dropdown-item" href="/persona/perfil") PERFIL
+                    a(class="dropdown-item" href="/singOut") CERRAR SESIÓN
+    .container-fluid
+        .row
+            .col-4
+            .col-4
+                h1 CREAR AGENDA
+                form(method="post" action="crearAgenda")
+                    .form-group
+                        label(for="clinica") CLINICA
+                        br
+                        br
+                        select#clinica(name="clinica" class="form-control")
+                            option(value=null) ------------------------------------------------------
+                    .form-group
+                        br
+                        label(for="tipo") TIPO:
+                        br
+                        br
+                        select#tipo(name="tipo" class="form-control" required)
+                            option(value=null) ------------------------------------------------------
+                            option(value="Medico") MEDICO
+                            option(value="Procedimiento") PROCEDIMIENTO
+                    .group-medico
+                        .from-group
+                            br
+                            label(for="especialidad") ESPECIALIDAD:
+                            br
+                            br
+                            select#especialidad(name="especialidad" class="form-control")
+                                option(value=null) ------------------------------------------------------
+                        .form-group
+                            br
+                            label(for="medico") MEDICO:
+                            br
+                            br
+                            select#medico(name="medico" class="form-control")
+                                option(value=null) ------------------------------------------------------
+                    .group-procedimiento
+                        .from-group
+                            br
+                            label(for="procedimiento") PROCEDIMIENTO:
+                            br
+                            br
+                            select#procedimiento(name="procedimiento" class="form-control")
+                                option(value=null) ------------------------------------------------------
+                    .form-group
+                        br
+                        label(for="tiempo_turno") TIEMPO DE DURACION TURNO:
+                        br
+                        br
+                        select#tiempo_turno(name="tiempo_turno" class="form-control")
+                            option(value="00:15:00") 00:15:00
+                            option(value="00:30:00") 00:30:00
+                            option(value="00:45:00") 00:45:00
+                            option(value="01:00:00") 01:00:00
+                    br
+                    button(type="submit" class="btn btn-outline-success" style="margin-left: 40%;") CREAR
+            .col-4
+
+    script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous")
+    script(src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js")
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js")
+    script(src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js")
+    script.
+        $("#tipo").change(function(){
+            if($("#tipo").val() == "Medico"){
+                $(".group-medico").css("display", "block")
+            }else{
+                $(".group-medico").css("display", "none")
+                $("#especialidad").prop('selectedIndex', 0)
+                $("#medico").prop('selectedIndex', 0)
+            }
+            
+            if($("#tipo").val() == "Procedimiento"){
+                $(".group-procedimiento").css("display", "block")
+            }else{
+                $(".group-procedimiento").css("display", "none")
+                $("#procedimiento").prop('selectedIndex', 0)
+            }
+        });
+
+        $(document).ready(function() {
+            $.ajax({
+                url: `http://localhost:3000/especialidad/todas`,
+                type: 'GET',
+                success: function(respuesta) {
+                    respuesta.forEach(e=>{
+                        console.log(e.nombre)
+                        document.getElementById('especialidad').innerHTML += `<option value=${e.id}>${e.nombre}</option>`;
+                    });
+                },
+                error: function() {
+                    console.error("No es posible completar la operación");
+                }
+            });
+            $.ajax({
+                url: `http://localhost:3000/procedimiento/todas`,
+                type: 'GET',
+                success: function(respuesta) {
+                    respuesta.forEach(e=>{
+                        console.log(e.nombre)
+                        document.getElementById('procedimiento').innerHTML += `<option value=${e.id}>${e.nombre}</option>`;
+                    });
+                },
+                error: function() {
+                    console.error("No es posible completar la operación");
+                }
+            });
+            $.ajax({
+                url: `http://localhost:3000/clinica/todas`,
+                type: 'GET',
+                success: function(respuesta) {
+                    respuesta.forEach(e=>{
+                        console.log(e.nombre)
+                        document.getElementById('clinica').innerHTML += `<option value=${e.id}>${e.nombre}</option>`;
+                    });
+                },
+                error: function() {
+                    console.error("No es posible completar la operación");
+                }
+            });
+        });
+
+        $("#especialidad").click(function() {
+            document.getElementById('medico').innerHTML = '';
+            document.getElementById('medico').innerHTML = `<option value="Null"}>------------------------------------------------------</option>`;
+            $.ajax({
+                url: `http://localhost:3000/medico/esp/${$("#especialidad").val()}`,
+                type: 'GET',
+                success: function(respuesta) {
+                    respuesta.forEach(e=>{
+                        console.log(e.nombre)
+                        document.getElementById('medico').innerHTML += `<option value=${e.id}>${e.Persona.nombre} ${e.Persona.apellido}</option>`;
+                    });
+                },
+                error: function() {
+                    console.error("No es posible completar la operación");
+                }
+            });
+        });
